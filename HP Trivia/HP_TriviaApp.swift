@@ -9,11 +9,13 @@ import SwiftUI
 
 @main
 struct HP_TriviaApp: App {
+    @StateObject private var store = Store()
     let persistenceController = PersistenceController.shared
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(store)
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
