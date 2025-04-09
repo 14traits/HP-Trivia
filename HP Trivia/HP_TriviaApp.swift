@@ -21,7 +21,7 @@ struct HP_TriviaApp: App {
                 .task{
                     await store.LoadProducts()
                 }
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+//                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
