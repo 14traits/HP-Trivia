@@ -16,6 +16,7 @@ class Game: ObservableObject {
     
     private var allQuestions: [Question] = []
     private var answeredQuestions: [Int] = []
+    private let savePath = FileManager.documentsDirectory.appending(path: "SavedScores")
     
     var filtedQuestions: [Question] = []
     var currentQuestion = Constants.previewQuestion
@@ -35,9 +36,8 @@ class Game: ObservableObject {
         answeredQuestions = []
     }
         
-    func filterQuestions(by books: [Int]) {
+    func filterQuestions(to books: [Int]) {
         filtedQuestions = allQuestions.filter { books.contains($0.book) }
-            return
     }
     
     func newQuestion() {
@@ -76,10 +76,30 @@ class Game: ObservableObject {
         recentScores[2] = recentScores[1]
         recentScores[1] = recentScores[0]
         recentScores[0] = gameScore
+        
+        saveScores()
+    }
+    
+    func loadScores() {
+        do {
+            let data = try Data(contentsOf: savePath)
+            recentScores = try JSONDecoder().decode([Int].self, from: data)
+        } catch {
+            recentScores = [0, 0, 0]
+        }
+    }
+    
+    private func saveScores() {
+        do {
+            let data = try JSONEncoder().encode(recentScores)
+            try data.write(to: savePath)
+        } catch {
+            print("Unable to save data: \(error)")
+        }
     }
     
     private func decodeQuestions() {
-        if let url = Bundle.main.url(forResource: "triva", withExtension: "json") {
+        if let url = Bundle.main.url(forResource: "trivia", withExtension: "json") {
             do {
                 let data = try Data(contentsOf: url)
                 let decoder = JSONDecoder()
